@@ -29,6 +29,7 @@ class DeserializeOperation: Operation {
 	fileprivate var extractedLinks: [String: URL]?
 	fileprivate var extractedJSONAPI: [String: Any]?
 	fileprivate var resourcePool: [Resource] = []
+    fileprivate var extractedRelatedMeta: [String: Any] = [:]
 	
 	// Output
 	var result: Failable<JSONAPIDocument, SerializerError>?
@@ -130,17 +131,23 @@ class DeserializeOperation: Operation {
 		// Extract meta
 		extractedMeta = data["meta"].dictionaryObject
 		
-		// Extract links
-		if let links = data["links"].dictionary {
-			extractedLinks = [:]
-			
-			for (key, value) in links {
-				if let linkURL = URL(string: value.stringValue) {
-					extractedLinks![key] = linkURL
-				}
-			}
-		}
-		
+        // Extract links
+        if let links = data["links"].dictionary {
+            extractedLinks = [:]
+            
+            for (key, value) in links {
+                if let linkURL = URL(string: value.stringValue) {
+                    extractedLinks![key] = linkURL
+                } else if let linkData = value.dictionaryObject {
+                    extractedRelatedMeta[key] = linkData
+                }
+            }
+        }
+        
+        let mergedDictionary = extractedMeta?.merging(extractedRelatedMeta) { (current, _) in current }
+        
+        extractedMeta = mergedDictionary
+        
 		// Extract jsonapi
 		extractedJSONAPI = data["jsonapi"].dictionaryObject
 		
