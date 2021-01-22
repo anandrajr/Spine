@@ -20,7 +20,7 @@ public class Serializer {
 	public var keyFormatter: KeyFormatter = AsIsKeyFormatter()
 
     /// If true, skip parsing of a resource and logs a warning but do not throw an error.
-    public var skipUnknownResourceType: Bool = false
+    public var skipUnknownResourceType: Bool = true
 
 	public init() {}
 

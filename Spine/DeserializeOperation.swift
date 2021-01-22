@@ -36,7 +36,7 @@ class DeserializeOperation: Operation {
 	
 	// MARK: -
 	
-    init(data: Data, resourceFactory: ResourceFactory, valueFormatters: ValueFormatterRegistry, keyFormatter: KeyFormatter, skipUnknownResourceType: Bool = false) {
+    init(data: Data, resourceFactory: ResourceFactory, valueFormatters: ValueFormatterRegistry, keyFormatter: KeyFormatter, skipUnknownResourceType: Bool = true) {
 		self.data = JSON(data)
 		self.resourceFactory = resourceFactory
 		self.valueFormatters = valueFormatters
