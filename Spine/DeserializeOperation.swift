@@ -282,13 +282,17 @@ class DeserializeOperation: Operation {
 			if let id = linkData["data"]?["id"].string {
 				do {
 					resource = try resourceFactory.dispense(type, id: id, pool: &resourcePool)
-				} catch {
+				} catch SerializerError.resourceTypeUnregistered(let resourceType) {
+                    return nil
+                } catch {
 					resource = try! resourceFactory.dispense(linkedType, id: id, pool: &resourcePool)
 				}
 			} else {
 				do {
 					resource = try resourceFactory.instantiate(type)
-				} catch {
+				} catch SerializerError.resourceTypeUnregistered(let resourceType) {
+                    return nil
+                } catch {
 					resource = try! resourceFactory.instantiate(linkedType)
 				}
 			}
